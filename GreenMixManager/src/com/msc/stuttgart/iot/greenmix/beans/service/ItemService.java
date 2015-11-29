@@ -3,6 +3,8 @@
  */
 package com.msc.stuttgart.iot.greenmix.beans.service;
 
+import com.msc.stuttgart.iot.greenmix.services.UserServiceImpl;
+
 /**
  * @author srikanth
  *
@@ -26,6 +28,8 @@ public class ItemService {
 		*/
 			if(serviceClass.getName().equals(IPlantService.class.getName()))
 				return fetchInstance(PlantServiceImpl.class);
+			else if(serviceClass.getName().equals(IUserService.class.getName()))
+				return fetchInstance(UserServiceImpl.class);
 			else {
 				return new Object();
 			}

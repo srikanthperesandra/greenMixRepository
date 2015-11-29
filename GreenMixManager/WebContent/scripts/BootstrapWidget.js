@@ -4,12 +4,15 @@
 
 $.getScript("jqwidgets/jqxcore.js");
 $.getScript("jqwidgets/jqxtabs.js");
+$.getScript("scripts/appConfig.js");
+$.ajaxSetup({async:false});
 $.getScript("scripts/ManagePlantsWidget.js") .done(function( script, textStatus ) {
-alert( "response"+textStatus );
+//alert( "response"+textStatus );
 })
 .fail(function( jqxhr, settings, exception ) {
-alert("response error="+exception+jqxhr);
+//alert("response error="+exception+jqxhr);
 });
+$.ajaxSetup({async:true});
 /*
 $.getScript("../jqwidgets/jqxcore.js")
 $.getScript("../jqwidgets/jqxdata.js")
@@ -45,7 +48,7 @@ var TabContainer = (function(){
 		},
 		prepareTabcontainer:function(){
 			//alert($("#tabs"));
-			$("#tabs").jqxTabs({ width: '100%', height: '100%',animationType: 'fade',theme:'ui-le-frog'});
+			$("#tabs").jqxTabs({ animationType: 'fade',theme:appConfig.theme});
 		}
 		
 	};

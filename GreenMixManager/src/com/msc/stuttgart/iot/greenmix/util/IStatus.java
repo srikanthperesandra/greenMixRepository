@@ -4,7 +4,7 @@
 package com.msc.stuttgart.iot.greenmix.util;
 
 /**
- * @author amith
+ * @author srikanth
  *
  */
 public interface IStatus {

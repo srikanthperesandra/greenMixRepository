@@ -3,5 +3,5 @@
  */
 
 var appConfig ={
-		theme:"ui-le-frog"
+		theme:"ui-sunny"
 };

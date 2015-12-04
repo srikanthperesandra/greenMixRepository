@@ -12,7 +12,9 @@ $.getScript("scripts/ManagePlantsWidget.js") .done(function( script, textStatus 
 .fail(function( jqxhr, settings, exception ) {
 //alert("response error="+exception+jqxhr);
 });
+$.getScript("scripts/LiveDataWidget.js");
 $.ajaxSetup({async:true});
+
 /*
 $.getScript("../jqwidgets/jqxcore.js")
 $.getScript("../jqwidgets/jqxdata.js")
@@ -38,6 +40,7 @@ var TabContainer = (function(){
 							
 							try{
 								PlantsGrid.init("managePlants");
+								LiveDataWidget.init("liveData");
 							}catch(error){
 								alert(error);
 							}

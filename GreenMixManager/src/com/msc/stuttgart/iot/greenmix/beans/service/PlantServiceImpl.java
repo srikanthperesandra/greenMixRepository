@@ -56,10 +56,10 @@ public class PlantServiceImpl implements IPlantService {
 				plant.setUserId(userId);
 				plants.add(plant);
 			}
-			
+			//service.close();
 			return new Status(IStatus.OK, plants, null);
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, LoggerUtil.toString(e), e);
@@ -93,10 +93,10 @@ public class PlantServiceImpl implements IPlantService {
 				plantSpecs.add(plantSpec);
 				
 			}
-			
+			//service.close();
 			return new Status(IStatus.OK, plantSpecs, null);
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, LoggerUtil.toString(e), e);
@@ -123,15 +123,20 @@ public class PlantServiceImpl implements IPlantService {
 														  input.getPlantSpecId()
 														  );
 				IDBService service=DBServiceFactory.createInstance();
-				if(service.executeInsertUpdateQuery(query)>0)
+				if(service.executeInsertUpdateQuery(query)>0){
+					service.close();
 					return new Status(IStatus.OK, "successfully added plant "+input.getPlantName(), null);
-				else
+				}
+				else{
+					service.close();
 					return new Status(IStatus.ERROR, "Failed to add plant "+input.getPlantName(), null);
+				}
+			
 			}else
 				return new Status(IStatus.ERROR, "Failed create Bluemix IOT device , failed to add plant "+input.getPlantName(), null);
 		
-		
-		} catch (JSONException e) {
+			
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, e.getMessage(), e);
@@ -151,8 +156,9 @@ public class PlantServiceImpl implements IPlantService {
 
 		IIOTFoundationServices iotService =IOTFoundationServiceFactory.creatInstance();
 		String query = " select PLANT_DEVICE from PLANT where id = "+plantDevice;
+		IDBService service =null;
 		try{
-			IDBService service=DBServiceFactory.createInstance();
+			 service=DBServiceFactory.createInstance();
 			ResultSet set = service.executeSelectQuery(query);
 			if(set.next()){
 				IStatus result = iotService.deleteDevice(set.getString(1));
@@ -167,9 +173,19 @@ public class PlantServiceImpl implements IPlantService {
 			}else{
 				return new Status(IStatus.ERROR, "Failed to fetch Plant details "+plantDevice, null);
 			}
+		
 		}catch(Exception e){
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, e.getMessage(), e);
+		}finally{
+			/*if(service!=null)
+				try {
+					service.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					return new Status(IStatus.ERROR, "Failed to close DB connection "+plantDevice, null);
+				}
+				*/
 		}
 		
 		

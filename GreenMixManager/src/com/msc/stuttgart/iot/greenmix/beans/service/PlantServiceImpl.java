@@ -3,6 +3,7 @@
  */
 package com.msc.stuttgart.iot.greenmix.beans.service;
 
+import java.security.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class PlantServiceImpl implements IPlantService {
 				plant.setUserId(userId);
 				plants.add(plant);
 			}
+			result.getStatement().close();
 			//service.close();
 			return new Status(IStatus.OK, plants, null);
 			
@@ -63,6 +65,15 @@ public class PlantServiceImpl implements IPlantService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, LoggerUtil.toString(e), e);
+		}finally{
+			if(result!=null){
+				try {
+					result.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
@@ -93,6 +104,7 @@ public class PlantServiceImpl implements IPlantService {
 				plantSpecs.add(plantSpec);
 				
 			}
+			result.getStatement().close();
 			//service.close();
 			return new Status(IStatus.OK, plantSpecs, null);
 			
@@ -100,6 +112,15 @@ public class PlantServiceImpl implements IPlantService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, LoggerUtil.toString(e), e);
+		}finally{
+			if(result!=null){
+				try {
+					result.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -124,11 +145,11 @@ public class PlantServiceImpl implements IPlantService {
 														  );
 				IDBService service=DBServiceFactory.createInstance();
 				if(service.executeInsertUpdateQuery(query)>0){
-					service.close();
+					//service.close();
 					return new Status(IStatus.OK, "successfully added plant "+input.getPlantName(), null);
 				}
 				else{
-					service.close();
+					//service.close();
 					return new Status(IStatus.ERROR, "Failed to add plant "+input.getPlantName(), null);
 				}
 			
@@ -162,6 +183,7 @@ public class PlantServiceImpl implements IPlantService {
 			ResultSet set = service.executeSelectQuery(query);
 			if(set.next()){
 				IStatus result = iotService.deleteDevice(set.getString(1));
+				set.getStatement().close();
 				if(result.isOk()){
 					query = "delete from PLANT where id="+plantDevice;
 					if(service.executeInsertUpdateQuery(query)>0)
@@ -195,6 +217,7 @@ public class PlantServiceImpl implements IPlantService {
 	@Override
 	public IStatus fetchLiveData(int limit,String device) {
 		// TODO Auto-generated method stub
+		ResultSet set=null;
 		try{
 			String query = "SELECT ID,TEMPERATURE_DEGREE_CELCIUS,LIGHT,MOISTURE,DEVICEID,"
 							+ "DATA_TIME FROM PLANT_HEALTH_DATA where DEVICEID='%s' order "
@@ -202,24 +225,74 @@ public class PlantServiceImpl implements IPlantService {
 			List<PlantHealthData> data = new LinkedList<PlantHealthData>();
 			String resultQuery = String.format(query, device,limit);
 			IDBService service=DBServiceFactory.createInstance();
-			ResultSet set = service.executeSelectQuery(resultQuery);
+			set = service.executeSelectQuery(resultQuery);
 			while(set.next()){
 				PlantHealthData healthData = new PlantHealthData();
 				healthData.setId(set.getInt(1));
 				healthData.setTemperature(set.getDouble(2));
 				healthData.setLight(set.getDouble(3));
 				healthData.setMoisture(set.getDouble(4));
+				healthData.setDevice(set.getString(5));
 				healthData.setDateTime(set.getTimestamp(6));
 				data.add(healthData);
 			}
+			set.getStatement().close();
 			return new Status(IStatus.OK, data, null);
 		}catch(Exception e){
 			e.printStackTrace();
 			return new Status(IStatus.ERROR, e.getMessage(), e);
+		}finally{
+			if(set!=null){
+				try {
+					set.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
 		
 		
+	}
+
+	@Override
+	public IStatus fetchHistoryData(String ts1, String ts2) {
+		// TODO Auto-generated method stub
+		ResultSet set=null;
+		try{
+			String query = "SELECT ID,TEMPERATURE_DEGREE_CELCIUS,LIGHT,MOISTURE,DEVICEID,"
+							+ "DATA_TIME FROM PLANT_HEALTH_DATA where DATA_TIME between '"+ts1+"' and '"+ts2+"' order "
+							+ "by DATA_TIME";
+			List<PlantHealthData> data = new LinkedList<PlantHealthData>();
+			IDBService service=DBServiceFactory.createInstance();
+			set = service.executeSelectQuery(query);
+			while(set.next()){
+				PlantHealthData healthData = new PlantHealthData();
+				healthData.setId(set.getInt(1));
+				healthData.setTemperature(set.getDouble(2));
+				healthData.setLight(set.getDouble(3));
+				healthData.setMoisture(set.getDouble(4));
+				healthData.setDevice(set.getString(5));
+				healthData.setDateTime(set.getTimestamp(6));
+				data.add(healthData);
+			}
+			set.getStatement().close();
+			return new Status(IStatus.OK, data, null);
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Status(IStatus.ERROR, e.getMessage(), e);
+		}finally{
+			if(set!=null){
+				try {
+					set.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
 	}
 
 }

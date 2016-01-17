@@ -15,6 +15,13 @@ public class PlantHealthData {
 	private double temperature;
 	private double moisture;
 	private double light;
+	private String device;
+	public String getDevice() {
+		return device;
+	}
+	public void setDevice(String device) {
+		this.device = device;
+	}
 	private Timestamp dateTime;
 	public int getId() {
 		return id;

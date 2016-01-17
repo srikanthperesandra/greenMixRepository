@@ -13,6 +13,8 @@ $.getScript("scripts/ManagePlantsWidget.js") .done(function( script, textStatus 
 //alert("response error="+exception+jqxhr);
 });
 $.getScript("scripts/LiveDataWidget.js");
+$.getScript("scripts/HistoryDataWidget.js");
+$.getScript("scripts/ManageAlertsWidget.js");
 $.ajaxSetup({async:true});
 
 /*
@@ -37,10 +39,15 @@ var TabContainer = (function(){
 				success: function(response) { 
 							thisRef.tabContainer.html(response);
 							thisRef.prepareTabcontainer();
-							
+							$("#logout").on("click",function(){
+								thisRef.logout(); 
+							});
 							try{
+								
 								PlantsGrid.init("managePlants");
 								LiveDataWidget.init("liveData");
+								HistoryDataWidget.init("history");
+								ManageAlertsWidget.init("manageAlerts");
 							}catch(error){
 								alert(error);
 							}
@@ -48,6 +55,13 @@ var TabContainer = (function(){
 						}
 			});
 			
+		},
+		logout:function(){
+			$.get("services/users/logout").done(function(data){
+				location.reload();
+			}).fail(function(data){
+				alert(JSON.stringify(data));
+			});
 		},
 		prepareTabcontainer:function(){
 			//alert($("#tabs"));

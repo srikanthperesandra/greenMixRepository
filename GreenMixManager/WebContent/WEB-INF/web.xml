@@ -28,9 +28,9 @@
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
-  <!-- 
+  
     <security-role>
-        <role-name>administrator</role-name>
+        <role-name>farmer</role-name>
     </security-role>
 
     <security-constraint>
@@ -38,12 +38,12 @@
             <web-resource-name>
                 GreenMix Application
             </web-resource-name>
-            
-            <url-pattern>/*</url-pattern>
-             
+            <url-pattern>/services/*</url-pattern>
+            <url-pattern>/scripts/*</url-pattern>
+            <url-pattern>/index.html</url-pattern> 
         </web-resource-collection>
         <auth-constraint>
-            <role-name>administrator</role-name>
+            <role-name>farmer</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -55,5 +55,4 @@
   		<form-error-page>/auth/logout.html</form-error-page>
   		</form-login-config>
     </login-config>
-  -->
 </web-app>

@@ -186,5 +186,25 @@ public class PlantService {
 			return Response.serverError().entity(LoggerUtil.toString(e)).build();	
 		}
 	}
-	
+	@Path("/healthData/history")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response fetchHistoryData(@QueryParam("time1") String time1, @QueryParam("time2") String time2){
+		try{
+			IPlantService service =(IPlantService)ItemService.getInstance().getService(IPlantService.class);
+			IStatus resultStatus = service.fetchHistoryData(time1, time2); 
+			if(resultStatus.isOk()){
+				JSONArray array = new JSONArray((List<PlantHealthData>)resultStatus.getMessage());
+				return Response.ok().entity(array.toString()).build();
+			}else{
+				JSONObject object = new JSONObject();
+				object.put("status", "ERROR");
+				object.put("reason", resultStatus.getMessage());
+				return Response.status(Status.NOT_FOUND).entity(object.toString()).build();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return Response.serverError().entity(LoggerUtil.toString(e)).build();	
+		}
+	}
 }

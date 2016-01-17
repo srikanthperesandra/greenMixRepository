@@ -14,7 +14,7 @@ public class DBConnection {
 		
 	}
 	
-	public static DBConnection getInstance() throws Exception{
+	public synchronized static DBConnection getInstance() throws Exception{
 		if(dbConnnection == null){
 			dbConnnection = new DBConnection();
 			Class.forName(IConfig.DB_DRIVER);
@@ -23,12 +23,12 @@ public class DBConnection {
 		return dbConnnection;
 	}
 	
-	public Connection getConnection(){
+	public synchronized Connection getConnection(){
 		return connection;
 	}
 	
 	
-	public Statement getStatement() throws SQLException{
+	public synchronized Statement getStatement() throws SQLException{
 		//System.out.println(dbConnnection.connection);
 		return dbConnnection.connection.createStatement();
 	}

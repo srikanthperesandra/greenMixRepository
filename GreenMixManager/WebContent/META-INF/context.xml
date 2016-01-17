@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+ <Realm className="org.apache.catalina.realm.JDBCRealm"
+      driverName="com.ibm.db2.jcc.DB2Driver"
+   	connectionURL="jdbc:db2://75.126.155.153:50000/SQLDB"
+   	connectionName="user09834"
+	connectionPassword="8x06ZWanAXAX"
+   	userTable="USERS" userNameCol="USERID" userCredCol="PASSWORD"
+   	userRoleTable="user_roles" roleNameCol="role_name"
+   	resourceName="UsersDB"/>
+</Context>

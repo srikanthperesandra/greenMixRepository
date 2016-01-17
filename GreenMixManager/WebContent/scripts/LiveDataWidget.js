@@ -78,24 +78,28 @@ var LiveDataWidget = (function(){
 				var thisRef= this;
 				var liveData=JSON.parse(data.payloadString);
 				var ul="<div><b><i>"+liveData.d.deviceId+"</i></b></div><ul>";
-				ul+="<li>Temperature:"+liveData.d.temperature+"</li>";
-				ul+="<li>Moisture:"+liveData.d.moisture+"</li>";
-				ul+="<li>Voltage:"+liveData.d.volts+"</li>";
-				ul+="</ul>"
-				var liveDiv=document.getElementById("liveDataMqtt");
-				liveDiv.innerHTML=liveDiv.innerHTML+ul;
+				ul+="<li>Temperature:<b>"+liveData.d.temperature+"</b></li>";
+				ul+="<li>Moisture:<b>"+liveData.d.moisture+"</b></li>";
+				ul+="<li>Voltage:<b>"+liveData.d.volts+"</b></li>";
+				ul+="<li>Water Required as per current mositure:<b>"+liveData.d.water+"</b></li>";
+				ul+="</ul>";
+				//var liveDiv=document.getElementById("liveDataMqtt");
+				//liveDiv.innerHTML=liveDiv.innerHTML+ul;
 				//alert(LiveDataWidget.chartSettings);
 				if(LiveDataWidget.chartDeviceId==liveData.d.deviceId){
 					if(LiveDataWidget.chartSettings.seriesGroups!=null ||
 							LiveDataWidget.chartSettings.seriesGroups!=undefined){
 						//alert("called");
-						//var len =LiveDataWidget.chartSettings.source.length;
-						//LiveDataWidget.chartSettings.source.push(LiveDataWidget.chartSettings.source[len-1]-1);
-						LiveDataWidget.chartSettings.seriesGroups[0].source.push(liveData.d.temperature);
-						LiveDataWidget.chartSettings.seriesGroups[1].source.push(liveData.d.moisture*100);
-						LiveDataWidget.chartSettings.seriesGroups[2].source.push(liveData.d.volts*100);
+						var len =LiveDataWidget.chartSettings.source.length;
+						LiveDataWidget.chartSettings.source.push({"Time":LiveDataWidget.chartSettings.source[len-1].Time-1});
+						var liveDiv=document.getElementById("liveDataMqtt");
+						liveDiv.innerHTML=liveDiv.innerHTML+ul;
+						LiveDataWidget.chartSettings.seriesGroups[0].source.push({"value":liveData.d.temperature});
+						LiveDataWidget.chartSettings.seriesGroups[1].source.push({"value":liveData.d.moisture*100});
+						LiveDataWidget.chartSettings.seriesGroups[2].source.push({"value":liveData.d.volts*100});
+						$('#dataGraph').jqxChart("getInstance").update();
 					}
-					$('#dataGraph').jqxChart("getInstance").update();
+					
 				}
 			},
 			getAllPlants:function(){
@@ -119,7 +123,7 @@ var LiveDataWidget = (function(){
 				$("#fetchLiveData").jqxButton({width:'40',theme:appConfig.theme});
 				var deviceId =null;
 				$("#fetchLiveData").on("click",function(){
-					
+					document.getElementById("liveDataMqtt").innerHTML="";
 					
 					$.each(thisRef.plantsData,function(index,node){
 						var  plant= $("#plantsInput").val();

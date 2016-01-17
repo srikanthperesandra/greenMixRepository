@@ -1,6 +1,7 @@
 package com.msc.stuttgart.iot.greenmix.db;
 
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Logger;
 
 import com.msc.stuttgart.iot.greenmix.util.LoggerUtil;
@@ -37,7 +38,9 @@ public class DBServiceImpl implements IDBService {
 		// TODO Auto-generated method stub
 		int result = -1;
 		try{
-			result = DBConnection.getInstance().getStatement().executeUpdate(query); 
+			Statement st = DBConnection.getInstance().getStatement();
+					result =st.executeUpdate(query); 
+					st.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

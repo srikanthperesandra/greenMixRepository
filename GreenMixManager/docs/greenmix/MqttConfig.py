@@ -1,0 +1,9 @@
+clientId="d:j3yjz2:MqttDeevice:orange_device_1"
+username="use-token-auth"
+password="3boZq_&b(fdUGAyQW7"
+host="j3yjz2.messaging.internetofthings.ibmcloud.com"
+port=1883
+publishTopic = "iot-2/evt/eid/fmt/json"
+subscribeTopic = "iot-2/cmd/cid/fmt/json"
+protocol = "mqtt.MQTTv311"
+deviceId="orange_device_1"

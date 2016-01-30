@@ -3,16 +3,12 @@
  */
 package com.msc.stuttgart.iot.greenmix.beans.service;
 
-import java.security.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.msc.stuttgart.iot.greenmix.beans.GMUser;
@@ -292,6 +288,62 @@ public class PlantServiceImpl implements IPlantService {
 				}
 			}
 			
+		}
+	}
+
+	@Override
+	public IStatus addPlantSpec(PlantSpec spec, GMUser user) {
+		// TODO Auto-generated method stub
+		
+		try{
+			/*
+			 * SELECT ID,NAME,MIN_TEMP,MAX_TEMP,MIN_MOISTURE,"
+				+ "MAX_MOISTURE,WATERING_INTERVAL,MIN_LUMS,MAX_LUMS FROM PLANT_TEMPLATE"+
+				" where USER_ID="+userId);
+			 */
+			
+			String queryFormat = "insert into PLANT_TEMPLATE(NAME,MIN_TEMP,MAX_TEMP,MIN_MOISTURE,"
+				+ "MAX_MOISTURE,WATERING_INTERVAL,MIN_LUMS,MAX_LUMS,USER_ID) values('%s',%d,%d,%f,%f,%d,%f,%f,%d)";
+			String query = String.format(queryFormat, spec.getName(),
+													  spec.getMinTemp(),
+													  spec.getMaxTemp(),
+													  spec.getMinMoisture(),
+													  spec.getMaxMoisture(),
+													  spec.getWateringLevel(),
+													  spec.getMaxLums(),
+													  spec.getMaxLums(),
+													  user.getUserId()
+													  );
+			IDBService service=DBServiceFactory.createInstance();
+			if(service.executeInsertUpdateQuery(query)>0){
+				//service.close();
+				return new Status(IStatus.OK, "successfully added plant Specification "+spec.getName(), null);
+			}
+			else{
+				//service.close();
+				return new Status(IStatus.ERROR, "Failed to add plant Specification "+spec.getName(), null);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Status(IStatus.ERROR, e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public IStatus deletePlantSpec(int specId) {
+		// TODO Auto-generated method stub
+		IDBService service =null;			 
+		try{
+			service=DBServiceFactory.createInstance();
+			String query = "delete from PLANT_TEMPLATE where id="+specId;
+			if(service.executeInsertUpdateQuery(query)>0)
+				return new Status(IStatus.OK, "successfully deleted palnt Spec "+specId, null);
+			else
+				return new Status(IStatus.ERROR, "Failed to delete plant spec"+specId, null);
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Status(IStatus.ERROR, e.getMessage(), e);
 		}
 	}
 

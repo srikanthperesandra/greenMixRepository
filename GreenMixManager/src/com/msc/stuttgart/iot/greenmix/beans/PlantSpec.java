@@ -3,6 +3,8 @@
  */
 package com.msc.stuttgart.iot.greenmix.beans;
 
+import org.json.JSONObject;
+
 /**
  * @author srikanth
  *
@@ -21,6 +23,24 @@ public class PlantSpec {
 	private int wateringLevel;
 	private double minLums;
 	private double maxLums;
+	
+	public PlantSpec(){
+		
+	}
+	public PlantSpec(JSONObject spec){
+		try{
+			name=spec.getString("name");
+			minTemp=spec.getInt("minTemp");
+			maxTemp=spec.getInt("maxTemp");
+			minMoisture=spec.getDouble("minMoisture");
+			maxMoisture=spec.getDouble("maxMoisture");
+			minLums=spec.getDouble("minLums");
+			maxLums=spec.getDouble("maxLums");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
 	public int getId() {
 		return id;
 	}

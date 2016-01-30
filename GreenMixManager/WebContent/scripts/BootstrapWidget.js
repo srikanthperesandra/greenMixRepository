@@ -15,6 +15,7 @@ $.getScript("scripts/ManagePlantsWidget.js") .done(function( script, textStatus 
 $.getScript("scripts/LiveDataWidget.js");
 $.getScript("scripts/HistoryDataWidget.js");
 $.getScript("scripts/ManageAlertsWidget.js");
+$.getScript("scripts/ManagePlantsSpecWidget.js");
 $.ajaxSetup({async:true});
 
 /*
@@ -48,8 +49,9 @@ var TabContainer = (function(){
 								LiveDataWidget.init("liveData");
 								HistoryDataWidget.init("history");
 								ManageAlertsWidget.init("manageAlerts");
+								ManagePlantsSpec.init("managePlantSpecs");
 							}catch(error){
-								alert(error);
+								alert(JSON.stringify(error));
 							}
 							
 						}

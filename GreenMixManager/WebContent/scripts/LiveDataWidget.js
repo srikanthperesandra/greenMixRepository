@@ -75,8 +75,21 @@ var LiveDataWidget = (function(){
 			},
 			handleMessage:function(data){
 				//alert(data.payloadString);
+				var liveAlerts=document.getElementById("liveAlerts");
 				var thisRef= this;
 				var liveData=JSON.parse(data.payloadString);
+				if(liveData.hasOwnProperty("alert")){
+					var ul="<div class=\"warningMessage\"><div><img src=\"images/warning.png\"/>&nbsp;<b>"+liveData.alert+" - "+liveData.deviceId+" "+liveData.timestamp+"</b></div><ul>";
+					for(var i=0;i<liveData.reason.length;i++){
+						ul+="<li>"+liveData.reason[i]+"</li>";
+					}
+					ul+="</ul></div><br/>";
+					if(liveAlerts.innerHTML=="No Live Alerts...")
+						liveAlerts.innerHTML=ul;
+					else
+					liveAlerts.innerHTML=ul+liveAlerts.innerHTML;
+					return;
+				}
 				var ul="<div><b><i>"+liveData.d.deviceId+"</i></b></div><ul>";
 				ul+="<li>Temperature:<b>"+liveData.d.temperature+"</b></li>";
 				ul+="<li>Moisture:<b>"+liveData.d.moisture+"</b></li>";

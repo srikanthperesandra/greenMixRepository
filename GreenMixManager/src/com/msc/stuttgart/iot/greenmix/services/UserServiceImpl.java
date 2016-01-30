@@ -44,6 +44,8 @@ public class UserServiceImpl implements IUserService{
 				gmUser.setAddress(set.getString(5));
 				
 			}
+			set.getStatement().close();
+			set.close();
 			return gmUser;
 		}catch(Exception e){
 			e.printStackTrace();

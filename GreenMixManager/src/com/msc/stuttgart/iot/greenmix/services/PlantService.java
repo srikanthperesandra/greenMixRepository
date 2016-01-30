@@ -141,6 +141,38 @@ public class PlantService {
 		}
 		
 	}
+	@Path("/specs")
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_PLAIN)
+	
+	public Response addPlantSpec(@FormParam("data") String content,@Context HttpServletRequest request){
+		
+		
+		//1. Add Device 
+		
+		try {
+			
+			PlantSpec spec = new PlantSpec(new JSONObject(content));
+			IPlantService service =(IPlantService)ItemService.getInstance().getService(IPlantService.class);
+			GMUser user = ((IUserService)ItemService.getInstance().getService(IUserService.class)).getLoggedInUser(request);
+			IStatus status=service.addPlantSpec(spec, user);
+			System.out.println((String)status.getMessage());
+			if(status.isOk())
+				return Response.ok().entity("successfully added plant spec"+spec.getName()).build();
+			else
+				return Response.status(Status.NOT_MODIFIED).entity("failed to add plant "+spec.getName()).build();
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.serverError().entity(LoggerUtil.toString(e)).build();
+		}
+		
+	}
+	
+	
+	
 	@Path("/{plantId}")
 	@DELETE
 	@Produces(MediaType.TEXT_PLAIN)
@@ -156,6 +188,30 @@ public class PlantService {
 				return Response.ok().entity("successfully deleted plant "+plantId).build();
 			else
 				return Response.status(Status.NOT_FOUND).entity("failed to add plant "+plantId).build();
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.serverError().entity(LoggerUtil.toString(e)).build();
+		}
+		
+	}
+	
+	@Path("/specs/{plantId}")
+	@DELETE
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response deletePlantSpecDevice(@Context HttpServletRequest request,@PathParam("plantId") int plantSpecId){
+		
+		
+		//1. Add Device 
+		
+		try {
+			
+			IPlantService service =(IPlantService)ItemService.getInstance().getService(IPlantService.class);
+			if(service.deletePlantSpec(plantSpecId).isOk())
+				return Response.ok().entity("successfully deleted plant Spec "+plantSpecId).build();
+			else
+				return Response.status(Status.NOT_FOUND).entity("failed to add plant Spec "+plantSpecId).build();
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -25,13 +25,13 @@ var ManageAlertsWidget = (function(){
 								thisRef.widgetDom.html(response);
 								//alert(response);
 								//thisRef.instantiateWidgetComponents();
-								$("#refreshButton").jqxButton({width:'100',theme:appConfig.theme});
-								thisRef.getRecentAlerts();
-								$("#refreshButton").on('click',function(){
+								//$("#refreshButton").jqxButton({width:'100',theme:appConfig.theme});
+								//thisRef.getRecentAlerts();
+								/*$("#refreshButton").on('click',function(){
 									
-									thisRef.getRecentAlerts();
+									//thisRef.getRecentAlerts();
 								
-								});
+								});*/
 							}catch(e){
 								alert(e);
 							}

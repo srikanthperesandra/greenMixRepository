@@ -29,9 +29,11 @@ var ManagePlantsSpec = (function(){
 		addPlantSpecDialog:null,
 		plantSpecs:new Array(),
 		jsonSpecs:null,
-		init:function(id){
+		plantsSpecCallback:null,
+		init:function(id,plantsSpecCallBack){
 			var thisRef = this;
 			this.plantsSpecGridDiv = $("#"+id);
+			this.plantsSpecCallback= plantsSpecCallBack;
 			//alert(this.plantsGridDiv);
 			
 			$.ajax({ url: 'templates/ManagePlantSpecsWidget.html', dataType: 'html', 
@@ -85,9 +87,10 @@ var ManagePlantsSpec = (function(){
 			$("#addPlantSpec").on('click',function(){
 				//$("#addPlantWindow").jqxWindow('resizable',true);
 				
-	                
+				
 				 $('#addPlantSpecWindow').jqxWindow('open');
 				 $('#addPlantSpecWindow').jqxWindow('focus');
+				 
 			});
 			
 			
@@ -124,8 +127,8 @@ var ManagePlantsSpec = (function(){
 							minTemp:$("#minTemp").val(),
 							maxMoisture:$("#maxMoisture").val(),
 							minMoisture:$("#minMoisture").val(),
-							maxVolts:$("#maxVolts").val(),
-							minVolts:$("#minVolts").val(),
+							maxLums:$("#maxVolts").val(),
+							minLums:$("#minVolts").val()
 				};
 				//alert(JSON.stringify(plantDetails));
 				
@@ -136,7 +139,8 @@ var ManagePlantsSpec = (function(){
 					data:"data="+JSON.stringify(plantDetails),
 					success:function(response){
 						alert(JSON.stringify(response));
-						thisRef.invokePlantsSpecService();
+						thisRef.invokePlantsSpecService("services/plants");
+						//thisRef.plantsSpecCallback.getPlantSpecs("services/plants");
 					},
 					error:function(data){
 						alert("error:"+JSON.stringify(data));
@@ -226,6 +230,7 @@ var ManagePlantsSpec = (function(){
 		                				}).done(function(data){
 		                					alert(data);
 		                					thisRef.invokePlantsSpecService();
+		                					//thisRef.plantsSpecCallback.getPlantSpecs("services/plants");
 		                				}).fail(function(error){
 		                					alert("error:"+error);
 		                				});

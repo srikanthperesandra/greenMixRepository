@@ -49,7 +49,7 @@ var TabContainer = (function(){
 								LiveDataWidget.init("liveData");
 								HistoryDataWidget.init("history");
 								ManageAlertsWidget.init("manageAlerts");
-								ManagePlantsSpec.init("managePlantSpecs");
+								ManagePlantsSpec.init("managePlantSpecs",PlantsGrid);
 							}catch(error){
 								alert(JSON.stringify(error));
 							}

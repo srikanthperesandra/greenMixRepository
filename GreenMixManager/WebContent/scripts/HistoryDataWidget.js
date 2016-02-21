@@ -30,7 +30,7 @@ var HistoryDataWidget = (function(){
                 gridLines: { visible: true },
                 title: { text: 'Discrete Time' }
             },
-            colorScheme: 'scheme04',
+            colorScheme: 'scheme03',
 		},
 		init:function(id){
 			this.widgetDom = $("#"+id);	

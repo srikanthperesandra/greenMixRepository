@@ -19,6 +19,7 @@ $.getScript("jqwidgets/jqxbuttons.js");
 $.getScript("jqwidgets/jqxinput.js");
 $.getScript("jqwidgets/jqxwindow.js");
 $.getScript("jqwidgets/jqxpanel.js");
+$.getScript("jqwidgets/jqxcombobox.js");
 var PlantsGrid = (function(){
 	
 	return {
@@ -33,6 +34,7 @@ var PlantsGrid = (function(){
 		addPlantDialog:null,
 		plantSpecs:new Array(),
 		jsonSpecs:null,
+		
 		init:function(id){
 			var thisRef = this;
 			this.plantsGridDiv = $("#"+id);
@@ -56,9 +58,14 @@ var PlantsGrid = (function(){
 			
 		},
 		
-		getPlantSpecs:function(){
+		getPlantSpecs:function(uri){
 			var thisRef = this;
-			$.get(thisRef.plantsService_uri+"/specs").done(function( data ) {
+			var newUri;
+			if(uri==null||uri==undefined)
+				newUri = thisRef.plantsService_uri;
+			else
+				newUri = uri;
+			$.get(newUri+"/specs").done(function( data ) {
 				//alert(JSON.stringify(data));
 				thisRef.jsonSpecs =data;
 				for(var i=0;i<data.length;i++)
@@ -66,7 +73,7 @@ var PlantsGrid = (function(){
 				thisRef.invokePlantsService();
 				thisRef.prepareWidgets();
 			}).fail(function(error){
-				alert(error);
+				alert(JSON.stringify(error));
 			});
 		},
 		prepareWidgets:function(){
@@ -74,6 +81,10 @@ var PlantsGrid = (function(){
 			
 			$("#addPlant").jqxButton({width:'100',theme:appConfig.theme});
 			//this.deletePlantButton=$("#deletePlant").jqxButton({width:150});
+			//if($('#addPlantWindow').jqxWindow('getInstance')!=null){
+				//$("#plantTemplate").jqxInput({placeHolder	: " Choose Plant Specification", height: 25, width: 200, minLength: 1,theme:appConfig.theme,source:this.plantSpecs});
+				//thisRef.prepareAddPlantDialog();
+			//}
 			$('#addPlantWindow').jqxWindow({
                 //showCollapseButton: true, 
                 
@@ -82,7 +93,11 @@ var PlantsGrid = (function(){
 				
                 theme:appConfig.theme,
                 initContent:function(){
-                	thisRef.prepareAddPlantDialog();
+                	try{
+                		thisRef.prepareAddPlantDialog();
+                	}catch(error){
+                		alert("error:"+JSON.stringify(error));
+                	}
                 }
 
                 });
@@ -105,13 +120,28 @@ var PlantsGrid = (function(){
 	private String location;
 	private int plantSpecId;
 			 */
-			//alert(this.plantSpecs);
+			//alert(JSON.stringify(this.plantSpecs));
 			var thisRef = this;
 			
 			$("#plantName").jqxInput({placeHolder: " Enter Plant Name", height: 25, width: 200, minLength: 1,theme:appConfig.theme});
 			$("#plantDevice").jqxInput({placeHolder: " Enter Plant Device Identifier", height: 25, width: 200, minLength: 1,theme:appConfig.theme});
 			$("#location").jqxInput({placeHolder: " Provide Plant location", height: 25, width: 200, minLength: 1,theme:appConfig.theme});
-			$("#plantTemplate").jqxInput({placeHolder: " Choose Plant Specification", height: 25, width: 200, minLength: 1,theme:appConfig.theme,source:this.plantSpecs});
+			$("#plantTemplate").jqxInput({placeHolder	: " Choose Plant Specification", height: 25, width: 200, minLength: 1,theme:appConfig.theme,
+				source:function(query,response){
+					$.get(thisRef.plantsService_uri+"/specs").done(function( data ) {
+						//alert(JSON.stringify(data));
+												thisRef.jsonSpecs =data;
+												thisRef.plantSpecs=[];
+													for(var i=0;i<data.length;i++)
+														thisRef.plantSpecs.push(data[i].name);
+													//alert(JSON.stringify(thisRef.plantSpecs));
+													response(thisRef.plantSpecs);
+											}).fail(function(data){
+													alert(JSON.stringify(data));
+					});
+				}
+						/*source:this.plantSpecs*/});
+			//$("#plantTemplate").jqxCombobox({placeHolder: " Choose Plant Specification", height: 25, width: 200, minLength: 1,theme:appConfig.theme,source:this.plantSpecs});
 			$("#submit").jqxButton({width:'100',theme:appConfig.theme});
 			$("#submit").on('click',function(){
 				

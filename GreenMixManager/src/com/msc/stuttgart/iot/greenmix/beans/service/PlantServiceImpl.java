@@ -310,7 +310,7 @@ public class PlantServiceImpl implements IPlantService {
 													  spec.getMinMoisture(),
 													  spec.getMaxMoisture(),
 													  spec.getWateringLevel(),
-													  spec.getMaxLums(),
+													  spec.getMinLums(),
 													  spec.getMaxLums(),
 													  user.getUserId()
 													  );
